@@ -33,21 +33,30 @@ class _LoginState extends State<Login> {
               Container(
                 height: 800,
                 // color: const Color(0xFF179797),
-                child: const MyCustomForm(),
+                child: MyCustomForm(),
               )
             ])));
   }
 }
 
 class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({super.key});
+  MyCustomForm({super.key});
 
   @override
   State<MyCustomForm> createState() => _MyCustomFormState();
 }
 
 class _MyCustomFormState extends State<MyCustomForm> {
+  _MyCustomFormState() {
+    _selectedval = _rolelist[0];
+  }
+
   final _loginformKey = GlobalKey<FormState>();
+  final _lemail = TextEditingController();
+  final _lpassword = TextEditingController();
+  final _rolelist = ["Vehicle Owner", "Shed owner"];
+
+  String _selectedval = "";
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -60,7 +69,33 @@ class _MyCustomFormState extends State<MyCustomForm> {
               left: 35),
           child: Column(
             children: [
+              DropdownButtonFormField(
+                
+                value: _selectedval,
+                items: _rolelist.map((e) {
+                  return DropdownMenuItem(
+                    
+                    child: Text(e),
+                    value: (e),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    _selectedval = val as String;
+                  });
+                },
+                icon: const Icon(Icons.arrow_drop_down_circle),
+                iconEnabledColor: Color.fromARGB(255, 114, 9, 1),
+                decoration: InputDecoration(
+                    labelText: "Select Your Role",
+                    prefixIcon: Icon(Icons.accessibility_new_rounded),
+                    border: UnderlineInputBorder()),
+              ),
+              SizedBox(
+                height: 20,
+              ),
               TextFormField(
+                controller: _lemail,
                 validator: (mail) {
                   if (mail == null || mail.isEmpty) {
                     return 'Please enter your e-mail';
@@ -83,6 +118,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
               ),
               SizedBox(height: 30),
               TextFormField(
+                controller: _lpassword,
                 validator: (password) {
                   if (password == null || password.isEmpty) {
                     return 'Please enter password';
