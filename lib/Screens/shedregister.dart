@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:second/Screens/login.dart';
 import 'package:second/Screens/shedowner_dashboard.dart';
-//import 'package:http/http.dart' as http;
-//import 'package:untitled/screens/user.dart';
-
-//import 'home.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ShedRegister extends StatefulWidget {
   const ShedRegister({Key? key}) : super(key: key);
@@ -57,6 +56,38 @@ class MyCustomForm extends StatefulWidget {
 
 class _MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
+  final _name = TextEditingController();
+  final _shedname = TextEditingController();
+  final _city = TextEditingController();
+  final _phonenumber = TextEditingController();
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  final _repassword = TextEditingController();
+
+  authenticate(_name, _shedname, _city, _phonenumber, _email, _password) async {
+    var response = await http.post(
+      Uri.parse(
+          'https://fuelapp-backend-production.up.railway.app/api/v1/register_shedowner'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "name": _name.text.toString(),
+        "email": _email.text.toString(),
+        "phone_number": _phonenumber.text.toString(),
+        "shed_name": _shedname.text.toString(),
+        "city": _city.text.toString(),
+        "password": _password.text.toString(),
+        "role": "SHEDOWNER"
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Hooreeyyy!!');
+    } else {
+      print(response.statusCode.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +97,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.fromLTRB(60, 10, 25, 10),
+              padding: const EdgeInsets.fromLTRB(40, 10, 25, 10),
               child: TextFormField(
+                controller: _name,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your name';
@@ -75,9 +107,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
                   return null;
                 },
                 decoration: InputDecoration(
-                  fillColor: Color.fromARGB(255, 220, 219, 219),
-                  filled: true,
-                  border: OutlineInputBorder(
+                  // fillColor: Color.fromARGB(255, 220, 219, 219),
+                  // filled: true,
+                  border: UnderlineInputBorder(
                     borderSide: BorderSide(
                         color: Colors.white,
                         width: 2.0,
@@ -90,8 +122,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(60, 10, 25, 10),
+              padding: const EdgeInsets.fromLTRB(40, 10, 25, 10),
               child: TextFormField(
+                controller: _shedname,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your Shed Name';
@@ -99,9 +132,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
                   return null;
                 },
                 decoration: const InputDecoration(
-                  fillColor: Color.fromARGB(255, 220, 219, 219),
-                  filled: true,
-                  border: OutlineInputBorder(
+                  // fillColor: Color.fromARGB(255, 220, 219, 219),
+                  // filled: true,
+                  border: UnderlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   hintText: 'Shed Name',
@@ -110,8 +143,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(60, 10, 25, 10),
+              padding: const EdgeInsets.fromLTRB(40, 10, 25, 10),
               child: TextFormField(
+                controller: _city,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter Shed location';
@@ -119,9 +153,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
                   return null;
                 },
                 decoration: const InputDecoration(
-                  fillColor: Color.fromARGB(255, 220, 219, 219),
-                  filled: true,
-                  border: OutlineInputBorder(
+                  // fillColor: Color.fromARGB(255, 220, 219, 219),
+                  // filled: true,
+                  border: UnderlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   hintText: 'City',
@@ -130,9 +164,10 @@ class _MyCustomFormState extends State<MyCustomForm> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(60, 10, 25, 10),
+              padding: const EdgeInsets.fromLTRB(40, 10, 25, 10),
               //padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               child: TextFormField(
+                controller: _phonenumber,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your phone number';
@@ -140,9 +175,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
                   return null;
                 },
                 decoration: const InputDecoration(
-                  fillColor: Color.fromARGB(255, 220, 219, 219),
-                  filled: true,
-                  border: OutlineInputBorder(
+                  // fillColor: Color.fromARGB(255, 220, 219, 219),
+                  // filled: true,
+                  border: UnderlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   hintText: 'Phone number',
@@ -151,8 +186,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(60, 10, 25, 10),
+              padding: const EdgeInsets.fromLTRB(40, 10, 25, 10),
               child: TextFormField(
+                controller: _email,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your e-mail';
@@ -165,9 +201,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
                   }
                 },
                 decoration: const InputDecoration(
-                  fillColor: Color.fromARGB(255, 220, 219, 219),
-                  filled: true,
-                  border: OutlineInputBorder(
+                  // fillColor: Color.fromARGB(255, 220, 219, 219),
+                  // filled: true,
+                  border: UnderlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   hintText: 'E-mail',
@@ -176,9 +212,10 @@ class _MyCustomFormState extends State<MyCustomForm> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(60, 10, 25, 10),
+              padding: const EdgeInsets.fromLTRB(40, 10, 25, 10),
               //padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               child: TextFormField(
+                controller: _password,
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -187,9 +224,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
                   return null;
                 },
                 decoration: const InputDecoration(
-                  fillColor: Color.fromARGB(255, 220, 219, 219),
-                  filled: true,
-                  border: OutlineInputBorder(
+                  // fillColor: Color.fromARGB(255, 220, 219, 219),
+                  // filled: true,
+                  border: UnderlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   hintText: 'Password',
@@ -198,9 +235,10 @@ class _MyCustomFormState extends State<MyCustomForm> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(60, 10, 25, 10),
+              padding: const EdgeInsets.fromLTRB(40, 10, 25, 10),
               //padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               child: TextFormField(
+                controller: _repassword,
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -209,9 +247,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
                   return null;
                 },
                 decoration: const InputDecoration(
-                  fillColor: Color.fromARGB(255, 220, 219, 219),
-                  filled: true,
-                  border: OutlineInputBorder(
+                  // fillColor: Color.fromARGB(255, 220, 219, 219),
+                  // filled: true,
+                  border: UnderlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   hintText: 'Confirm Password',
@@ -229,15 +267,13 @@ class _MyCustomFormState extends State<MyCustomForm> {
                   height: 50,
                   width: 180,
                   decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 114, 9, 1),
+                      color: Color.fromARGB(255, 52, 9, 6),
                       borderRadius: BorderRadius.circular(20)),
                   child: TextButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => ShedOwnerDashBoard()));
+                        authenticate(_name, _shedname, _city, _phonenumber,
+                            _email, _password);
                       }
                     },
                     child: Text(

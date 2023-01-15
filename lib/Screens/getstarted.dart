@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:second/Screens/login.dart';
 
-import 'registeras.dart';
-
 class GetStarted extends StatelessWidget {
   const GetStarted({super.key});
 

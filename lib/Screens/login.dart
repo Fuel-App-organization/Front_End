@@ -47,11 +47,11 @@ class MyCustomForm extends StatefulWidget {
 }
 
 class _MyCustomFormState extends State<MyCustomForm> {
-  final _formKey = GlobalKey<FormState>();
+  final _loginformKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: _loginformKey,
       child: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.only(
@@ -61,39 +61,43 @@ class _MyCustomFormState extends State<MyCustomForm> {
           child: Column(
             children: [
               TextFormField(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
+                validator: (mail) {
+                  if (mail == null || mail.isEmpty) {
                     return 'Please enter your e-mail';
                   } else if (RegExp(
                           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                      .hasMatch(value)) {
+                      .hasMatch(mail)) {
                     return null;
                   } else {
                     return "Enter valid email";
                   }
                 },
                 decoration: InputDecoration(
-                    fillColor: Colors.grey.shade100,
-                    filled: true,
+                    prefixIcon: Icon(Icons.mail),
+                    // fillColor: Colors.grey.shade100,
+                    // filled: true,
                     hintText: "Email",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10))),
+                    border: UnderlineInputBorder(
+                        // borderRadius: BorderRadius.circular(10)
+                        )),
               ),
               SizedBox(height: 30),
               TextFormField(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
+                validator: (password) {
+                  if (password == null || password.isEmpty) {
                     return 'Please enter password';
                   }
                   return null;
                 },
                 obscureText: true,
                 decoration: InputDecoration(
-                    fillColor: Colors.grey.shade100,
-                    filled: true,
+                    prefixIcon: Icon(Icons.password),
+                    // fillColor: Colors.grey.shade100,
+                    // filled: true,
                     hintText: "Password",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10))),
+                    border: UnderlineInputBorder(
+                        // borderRadius: BorderRadius.circular(10)
+                        )),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -122,7 +126,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
                         borderRadius: BorderRadius.circular(20)),
                     child: TextButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
+                        if (_loginformKey.currentState!.validate()) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
