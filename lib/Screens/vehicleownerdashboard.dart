@@ -1,6 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:second/Screens/shed.dart';
+import 'package:second/Screens/joinqueue.dart';
+
 import 'package:second/model/shed_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'sidebar.dart';
 
 class VehicleOwnerDashBoard extends StatefulWidget {
   const VehicleOwnerDashBoard({super.key});
@@ -10,6 +18,13 @@ class VehicleOwnerDashBoard extends StatefulWidget {
 }
 
 class _CarOwnerDashBoardState extends State<VehicleOwnerDashBoard> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchAreas();
+  }
+
   static List<shedModel> main_shed_list = [
     shedModel("Diyagama Fuel Station", "Open"),
     shedModel("Kottawa Fuel Station", "Closed"),
@@ -26,6 +41,26 @@ class _CarOwnerDashBoardState extends State<VehicleOwnerDashBoard> {
     shedModel("Buttala Fuel Station", "Open"),
   ];
 
+  fetchAreas() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('authToken');
+    var url =
+        'https://fuelapp-backend-production.up.railway.app/api/v1/search_services';
+    var response = await http.post(Uri.parse(url), headers: {
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.authorizationHeader: token.toString(),
+    });
+    // ignore: avoid_print
+    print('Area get status' + response.statusCode.toString());
+    if (response.statusCode == 200) {
+      var jsoned_ = json.decode(response.body);
+      var data = jsoned_['data'];
+      data.forEach((item) =>
+          {main_shed_list.add(shedModel(item['shedname'], item['status']))});
+      print('LISTTTT: ' + main_shed_list.toString());
+    } else {}
+  }
+
   List<shedModel> display_list = List.from(main_shed_list);
 
   void updateList(String value) {
@@ -40,13 +75,15 @@ class _CarOwnerDashBoardState extends State<VehicleOwnerDashBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SideBar(),
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.menu,
-            color: Colors.white,
+        leading: Builder(
+          builder: (context) => IconButton(
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            icon: const Icon(Icons.menu,
+                color: Color.fromARGB(255, 255, 255, 255)),
+            iconSize: 35,
           ),
-          onPressed: () {},
         ),
         centerTitle: true,
         // backgroundColor: Color.fromARGB(255, 90, 0, 0),
@@ -107,7 +144,7 @@ class _CarOwnerDashBoardState extends State<VehicleOwnerDashBoard> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: ((context) => ShedPage())));
+                                  builder: ((context) => JoinQueue())));
                         }),
                       )),
             )

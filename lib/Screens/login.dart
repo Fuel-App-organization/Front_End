@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:second/Screens/registeras.dart';
 import 'package:second/Screens/shedowner_dashboard.dart';
+import 'package:http/http.dart' as http;
+import 'package:second/Screens/vehicleownerdashboard.dart';
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -47,16 +52,54 @@ class MyCustomForm extends StatefulWidget {
 }
 
 class _MyCustomFormState extends State<MyCustomForm> {
-  _MyCustomFormState() {
-    _selectedval = _rolelist[0];
-  }
-
   final _loginformKey = GlobalKey<FormState>();
   final _lemail = TextEditingController();
   final _lpassword = TextEditingController();
-  final _rolelist = ["Vehicle Owner", "Shed owner"];
+  final _role = TextEditingController();
 
-  String _selectedval = "";
+  storeUserToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('authToken', token);
+    print('User token stored in SharedPrefs');
+  }
+
+  authenticate(_role, _lemail, _lpassword) async {
+    var url = '';
+    if (_role.text.toString() == 'VEHICLEOWNER') {
+      url =
+          "https://fuelapp-backend-production.up.railway.app/api/v1/login_vehicleowner";
+    } else {
+      url =
+          "https://fuelapp-backend-production.up.railway.app/api/v1/login_shedowner";
+    }
+    var response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "email": _lemail.text.toString(),
+        "password": _lpassword.text.toString(),
+        "role": _role.text.toString()
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      var jsoned_ = json.decode(response.body);
+      storeUserToken(jsoned_['data']['token'].toString());
+      print('Hooreeyyy!!');
+      if (_role.text.toString() == 'VEHICLEOWNER') {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (_) => VehicleOwnerDashBoard()));
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => ShedOwnerDashBoard()));
+      }
+    } else {
+      print(response.body.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -69,27 +112,16 @@ class _MyCustomFormState extends State<MyCustomForm> {
               left: 35),
           child: Column(
             children: [
-              DropdownButtonFormField(
-                
-                value: _selectedval,
-                items: _rolelist.map((e) {
-                  return DropdownMenuItem(
-                    
-                    child: Text(e),
-                    value: (e),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  setState(() {
-                    _selectedval = val as String;
-                  });
-                },
-                icon: const Icon(Icons.arrow_drop_down_circle),
-                iconEnabledColor: Color.fromARGB(255, 114, 9, 1),
+              TextFormField(
+                controller: _role,
                 decoration: InputDecoration(
-                    labelText: "Select Your Role",
-                    prefixIcon: Icon(Icons.accessibility_new_rounded),
-                    border: UnderlineInputBorder()),
+                    prefixIcon: Icon(Icons.password),
+                    // fillColor: Colors.grey.shade100,
+                    // filled: true,
+                    hintText: "role",
+                    border: UnderlineInputBorder(
+                        // borderRadius: BorderRadius.circular(10)
+                        )),
               ),
               SizedBox(
                 height: 20,
@@ -163,10 +195,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
                     child: TextButton(
                       onPressed: () {
                         if (_loginformKey.currentState!.validate()) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => ShedOwnerDashBoard()));
+                          authenticate(_role, _lemail, _lpassword);
                         }
                       },
                       child: Text(

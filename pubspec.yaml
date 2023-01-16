@@ -41,6 +41,7 @@ dependencies:
   toggle_switch: ^2.0.1
   fluttertoast: ^8.1.2
   http: ^0.13.5
+  shared_preferences:
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,8 @@ flutter:
     - assets/images/carowner.png
     - assets/images/3.png
     - assets/images/4.png
+    - assets/images/6.jpg
+    - assets/images/bella.png
     - assets/images/types.jpg
     - assets/images/login.png
 

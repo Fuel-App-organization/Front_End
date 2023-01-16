@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:second/Screens/fuelqueue.dart';
 import 'package:second/Screens/updatefuelstatus.dart';
 
+import 'sidebar2.dart';
+
 class ShedOwnerDashBoard extends StatelessWidget {
   const ShedOwnerDashBoard({super.key});
 
@@ -9,7 +11,16 @@ class ShedOwnerDashBoard extends StatelessWidget {
   Widget build(BuildContext context) => DefaultTabController(
       length: 2,
       child: Scaffold(
+        drawer: SideBar2(),
         appBar: AppBar(
+          leading: Builder(
+            builder: (context) => IconButton(
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              icon: const Icon(Icons.menu,
+                  color: Color.fromARGB(255, 255, 255, 255)),
+              iconSize: 35,
+            ),
+          ),
           title: Text(
             "Diyagama Filling Station",
             textAlign: TextAlign.center,
@@ -41,13 +52,6 @@ class ShedOwnerDashBoard extends StatelessWidget {
                 )
               ]),
           elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.menu,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          ),
         ),
         body: TabBarView(
           children: [UpdateFuel(), FuelQueue()],
