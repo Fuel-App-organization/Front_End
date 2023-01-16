@@ -118,7 +118,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
                     prefixIcon: Icon(Icons.password),
                     // fillColor: Colors.grey.shade100,
                     // filled: true,
-                    hintText: "role",
+                    hintText: "Role  (SHEDOWNER/VEHICLEOWNER)",
                     border: UnderlineInputBorder(
                         // borderRadius: BorderRadius.circular(10)
                         )),
