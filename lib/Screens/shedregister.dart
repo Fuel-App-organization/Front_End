@@ -84,6 +84,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
 
     if (response.statusCode == 200) {
       print('Hooreeyyy!!');
+      Navigator.push(context, MaterialPageRoute(builder: (_) => Login()));
     } else {
       print(response.statusCode.toString());
     }
